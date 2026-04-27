@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy — Fighter Jet Wars</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Share+Tech+Mono&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --ink: #030508;
+            --slate: #0f1724;
+            --ink-text: #b8c5d4;
+            --pale: #e8eef6;
+            --hud: #c9a227;
+            --cue: #5ab4e0;
+        }
+
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background: var(--ink);
+            color: var(--ink-text);
+            min-height: 100vh;
+            line-height: 1.65;
+            font-size: 0.92rem;
+        }
+
+        .vignette {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse 90% 70% at 50% 0%, rgba(20, 40, 64, 0.35) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .stripes {
+            position: fixed;
+            inset: 0;
+            background: repeating-linear-gradient(
+                -45deg,
+                transparent,
+                transparent 3px,
+                rgba(201, 162, 39, 0.02) 3px,
+                rgba(201, 162, 39, 0.02) 4px
+            );
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .page {
+            position: relative;
+            z-index: 1;
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 36px 22px 64px;
+        }
+
+        @media (min-width: 600px) {
+            .page {
+                padding: 48px 32px 80px;
+            }
+        }
+
+        .mast {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid rgba(201, 162, 39, 0.2);
+        }
+
+        .brand {
+            font-family: 'Chakra Petch', sans-serif;
+            font-weight: 700;
+            font-size: 0.7rem;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--hud);
+            margin-bottom: 6px;
+        }
+
+        h1 {
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: clamp(1.4rem, 3.2vw, 1.75rem);
+            font-weight: 700;
+            color: var(--pale);
+            letter-spacing: 0.08em;
+        }
+
+        .date {
+            margin-top: 12px;
+            color: #64748b;
+            font-size: 0.8rem;
+        }
+
+        p.intro {
+            color: #94a3b8;
+            margin-bottom: 32px;
+            line-height: 1.7;
+        }
+
+        .section {
+            margin-bottom: 28px;
+        }
+
+        .head {
+            font-family: 'Chakra Petch', sans-serif;
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .head .code {
+            font-size: 0.65rem;
+            color: var(--cue);
+            letter-spacing: 0.1em;
+        }
+
+        .head h2 {
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--pale);
+        }
+
+        .section p {
+            margin-bottom: 10px;
+        }
+
+        .section p:last-child {
+            margin-bottom: 0;
+        }
+
+        .box {
+            margin-top: 14px;
+            padding: 14px 16px;
+            background: var(--slate);
+            border-left: 3px solid var(--hud);
+            color: #cbd5e1;
+        }
+
+        .box strong {
+            color: var(--pale);
+        }
+
+        .kv {
+            margin-top: 16px;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1.4fr;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .row:last-of-type {
+            border-bottom: none;
+        }
+
+        @media (max-width: 480px) {
+            .row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .k {
+            font-size: 0.72rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--cue);
+        }
+
+        .v {
+            color: #94a3b8;
+        }
+
+        .footer-nav {
+            margin-top: 40px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .footer-nav a {
+            font-family: 'Chakra Petch', sans-serif;
+            color: var(--hud);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+        }
+
+        .footer-nav a:hover {
+            color: var(--cue);
+        }
+
+        .end {
+            margin-top: 16px;
+            font-size: 0.72rem;
+            color: #475569;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="vignette" aria-hidden="true"></div>
+    <div class="stripes" aria-hidden="true"></div>
+    <div class="page">
+        <header class="mast">
+            <p class="brand">Fighter Jet Wars</p>
+            <h1>Privacy information</h1>
+            <p class="date">Last updated: April 27, 2026</p>
+        </header>
+
+        <p class="intro">This notice describes the privacy posture of the <strong style="color: var(--pale);">Fighter Jet Wars</strong> mobile app as distributed on the App Store. It is written in plain terms and is not a substitute for the privacy nutrition labels, disclosures, and system controls shown by Apple on the product page, which can change independently of this document.</p>
+
+        <div class="section" id="store">
+            <div class="head">
+                <span class="code">A1</span>
+                <h2>App Store label</h2>
+            </div>
+            <p>Apple’s product page for Fighter Jet Wars currently shows <strong style="color: var(--pale);">Data Not Collected</strong> — the developer is indicated as <strong>not collecting data from this app</strong> in that store disclosure. If an update to the app or store changes that summary, the version of the label shown on the official App Store page for the build you install is the one to rely on.</p>
+        </div>
+
+        <div class="section" id="device">
+            <div class="head">
+                <span class="code">A2</span>
+                <h2>What stays on the device</h2>
+            </div>
+            <p>As with many games, progress, settings, and similar data may be stored <strong>locally on the device</strong> so the app can resume where you left off. That on-device data is under the control of the device user unless the operating system or a user-enabled backup (for example, device backup) copies it according to how the platform works.</p>
+        </div>
+
+        <div class="section" id="apple">
+            <div class="head">
+                <span class="code">A3</span>
+                <h2>Apple and the store</h2>
+            </div>
+            <p>Installing and updating the game, licensing, and related platform features are handled by <strong>Apple’s systems and policies</strong>. Parental controls, device privacy settings, and how Apple may process data in connection with the App Store are outside this app’s code.</p>
+        </div>
+
+        <div class="section" id="rights">
+            <div class="head">
+                <span class="code">A4</span>
+                <h2>Your choices</h2>
+            </div>
+            <p>Where a developer does not collect information as shown on the store, there is typically <strong>no account data held by the developer to export or delete</strong> in connection with that label. You can still manage device-level and Apple ID settings in iOS, and remove the app to delete its local data subject to your backup and device rules.</p>
+        </div>
+
+        <div class="section" id="changes">
+            <div class="head">
+                <span class="code">A5</span>
+                <h2>Changes to this text</h2>
+            </div>
+            <p>When the game or its store listing meaningfully changes, this file may be revised. The <strong>last updated</strong> line at the top will change when the wording does.</p>
+        </div>
+
+        <div class="box">
+            <strong>Reference.</strong> Product details, compatibility, and age rating for Fighter Jet Wars are shown on the App Store. For the authoritative description of the app, its permissions, and privacy label for your installed version, open the app’s page in the store on your device.
+        </div>
+
+        <div class="kv" aria-label="Key facts">
+            <div class="row">
+                <div class="k">Scope</div>
+                <div class="v">Fighter Jet Wars (iOS distribution as listed on the App Store).</div>
+            </div>
+            <div class="row">
+                <div class="k">Data collection (per current label)</div>
+                <div class="v">None indicated by the developer in the “Data Not Collected” section on the store.</div>
+            </div>
+        </div>
+
+        <nav class="footer-nav" aria-label="Page footer">
+            <a href="index.html">Back to the game page</a>
+        </nav>
+        <p class="end">Fighter Jet Wars and related app assets are property of their respective rights holders.</p>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fighter Jet Wars — Air Combat Action for iPhone</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Rajdhani:wght@400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --night: #050a12;
+            --sky: #0c1829;
+            --hud-amber: #e8a317;
+            --hud-amber-dim: rgba(232, 163, 23, 0.2);
+            --ice: #6ecff6;
+            --threat: #e85c3c;
+            --fog: #8fa4bc;
+            --white: #eef4fb;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--night);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 100% 80% at 50% 0%, rgba(12, 32, 58, 0.9) 0%, transparent 55%),
+                linear-gradient(180deg, #071018 0%, #050a12 45%, #020508 100%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .hud-grid {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(110, 207, 246, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(110, 207, 246, 0.03) 1px, transparent 1px);
+            background-size: 48px 48px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .horizon {
+            position: fixed;
+            top: 18%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(232, 163, 23, 0.4), transparent);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .wrap {
+            max-width: 720px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(232, 163, 23, 0.25);
+            border-radius: 4px;
+            background: linear-gradient(180deg, rgba(12, 24, 42, 0.92) 0%, rgba(5, 10, 20, 0.96) 100%);
+            box-shadow:
+                0 0 0 1px rgba(110, 207, 246, 0.06) inset,
+                0 24px 80px rgba(0, 0, 0, 0.65);
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 16px), calc(100% - 20px) 100%, 0 100%);
+        }
+
+        .wrap-inner {
+            padding: 36px 32px 32px;
+        }
+
+        @media (max-width: 520px) {
+            .wrap-inner {
+                padding: 26px 20px 24px;
+            }
+        }
+
+        .tally {
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 0.65rem;
+            letter-spacing: 0.5em;
+            text-transform: uppercase;
+            color: var(--hud-amber);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tally::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--hud-amber-dim), transparent);
+        }
+
+        .jet-hero {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            margin-bottom: 26px;
+        }
+
+        .threat-blink {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--threat);
+            box-shadow: 0 0 12px var(--threat);
+            animation: blink 1.1s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0.2; }
+        }
+
+        .cross {
+            position: relative;
+            width: 100px;
+            height: 100px;
+        }
+
+        .cross::before,
+        .cross::after {
+            content: '';
+            position: absolute;
+            background: linear-gradient(180deg, var(--hud-amber) 0%, var(--hud-amber-dim) 100%);
+        }
+
+        .cross::before {
+            left: 50%;
+            top: 0;
+            width: 1px;
+            height: 100%;
+            margin-left: -0.5px;
+        }
+
+        .cross::after {
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            margin-top: -0.5px;
+        }
+
+        .reticle {
+            position: absolute;
+            inset: 8px;
+            border: 1px solid rgba(110, 207, 246, 0.35);
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .reticle::before {
+            content: '◆';
+            font-size: 0.5rem;
+            color: var(--hud-amber);
+            opacity: 0.9;
+        }
+
+        h1 {
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: clamp(1.7rem, 4.2vw, 2.2rem);
+            font-weight: 700;
+            color: var(--white);
+            text-align: center;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        h1 .accent {
+            color: var(--ice);
+            text-shadow: 0 0 24px rgba(110, 207, 246, 0.4);
+        }
+
+        .sub {
+            text-align: center;
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: rgba(232, 92, 60, 0.9);
+            margin-bottom: 22px;
+        }
+
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .chip {
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 6px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--fog);
+            background: rgba(8, 16, 30, 0.6);
+        }
+
+        .chip.h {
+            border-color: rgba(110, 207, 246, 0.4);
+            color: #9fdcff;
+        }
+
+        .chip.r {
+            border-color: rgba(232, 163, 23, 0.45);
+            color: #ffd28a;
+        }
+
+        p.lead {
+            color: var(--fog);
+            line-height: 1.78;
+            font-size: 1.06rem;
+            margin-bottom: 20px;
+        }
+
+        p.lead strong {
+            color: var(--white);
+        }
+
+        .label {
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            color: var(--hud-amber);
+            margin: 28px 0 12px;
+        }
+
+        ul.spec {
+            list-style: none;
+        }
+
+        ul.spec li {
+            position: relative;
+            padding: 10px 0 10px 0;
+            padding-left: 22px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            color: var(--fog);
+            line-height: 1.6;
+            font-size: 1.02rem;
+        }
+
+        ul.spec li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            top: 10px;
+            color: var(--ice);
+            font-size: 0.75rem;
+        }
+
+        ul.spec li strong {
+            color: var(--white);
+        }
+
+        .cta {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            padding: 16px 24px;
+            border: 1px solid var(--hud-amber);
+            border-radius: 2px;
+            text-decoration: none;
+            font-family: 'Chakra Petch', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #0a0f16;
+            background: linear-gradient(180deg, #f0b32d 0%, var(--hud-amber) 100%);
+            box-shadow: 0 0 24px rgba(232, 163, 23, 0.25);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+
+        .cta:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 0 32px rgba(110, 207, 246, 0.2);
+        }
+
+        .foot {
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+        }
+
+        .foot a {
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 0.78rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--ice);
+            text-decoration: none;
+        }
+
+        .foot a:hover {
+            color: var(--hud-amber);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="hud-grid" aria-hidden="true"></div>
+    <div class="horizon" aria-hidden="true"></div>
+    <div class="wrap">
+        <div class="wrap-inner">
+            <p class="tally">Cleared hot</p>
+
+            <div class="jet-hero" aria-hidden="true">
+                <div class="threat-blink"></div>
+                <div class="cross" aria-hidden="true">
+                    <div class="reticle"></div>
+                </div>
+            </div>
+
+            <h1><span class="accent">Fighter</span> Jet Wars</h1>
+            <p class="sub">Lock · Fire · Dominate</p>
+
+            <div class="chips">
+                <span class="chip h">Action</span>
+                <span class="chip r">iPhone</span>
+                <span class="chip">iOS 15+</span>
+                <span class="chip">Free</span>
+                <span class="chip">4+</span>
+            </div>
+
+            <p class="lead"><strong>Rule the skies in explosive fighter jet battles.</strong> Fighter Jet Wars throws you into fast air combat: pilot powerful fighters, evade incoming missiles, and return fire with heavy ordnance as you fight for control of the airspace. Fast pacing, tight dogfights, and punchy action keep every run about reflexes, positioning, and timing under pressure.</p>
+
+            <p class="lead">Every sortie is a test of how well you <strong>read the threat picture</strong>, <strong>break locks</strong>, and <strong>unleash firepower</strong> in the right window. Missions and encounters stack tension so one clean pass can flip the round — and one mistake can cost altitude and momentum. Built for iPhone, tuned for on-the-go play.</p>
+
+            <p class="label">Tactical readout</p>
+            <ul class="spec">
+                <li><strong>Jet combat action:</strong> high-energy fights with evasive play and aggressive strike windows.</li>
+                <li><strong>Explosive encounters:</strong> keep pressure on while missiles and hazards force split-second calls.</li>
+                <li><strong>Reflex and strategy:</strong> read patterns, time bursts, and balance risk when the sky is crowded.</li>
+                <li><strong>English language:</strong> the App Store listing lists English; interface text follows the app build.</li>
+            </ul>
+
+            <a href="https://apps.apple.com/us/app/fighter-jet-wars/id6763283589?uo=4" class="cta" target="_blank" rel="noopener noreferrer">Download on the App Store</a>
+
+            <div class="foot">
+                <a href="privacy.html">Privacy</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
